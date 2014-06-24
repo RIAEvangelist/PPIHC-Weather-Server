@@ -23,7 +23,7 @@ new pubsub(pikespeak);
 pikespeak.on(
     'weather.update',
     function(){
-        console.log(checkingWeather)
+        //console.log(checkingWeather)
         if(checkingWeather>0)
             return;
         
@@ -44,7 +44,7 @@ function getWeather(){
         (
             function(i){
                 https.get(
-                    'https://api.forecast.io/forecast/[your api key here]/'+locations[i].lat+','+locations[i].lon,
+                    'https://api.forecast.io/forecast/[your api key here]/'+locations[i].lat+','+locations[i].long,
                     function(result) {
                         var response = '';
                         result.setEncoding('utf8');
@@ -277,7 +277,7 @@ getWeather();
 io.sockets.on(
     'connection', 
     function (socket){
-        console.log(12345678);
+        //console.log(12345678);
         socket.emit(
             'weather.init',
             {
