@@ -279,9 +279,3 @@ var locations=[
     "Long":-105.043992
   }
 ];
-
-var server = net.createServer();
-server.listen(
-    8002, 
-    function() {}
-);
