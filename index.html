@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Newcombs Ranch Conditions App</title>
+        <script src='http://pikespeak.diginow.it:14114/socket.io/socket.io.js'></script>
+        <script>
+            var socket = io.connect('http://pikespeak.diginow.it:14114');
+            var inited=0;
+            
+            socket.on(
+                'weather.init',
+                function(data){
+                    console.log(data);
+                    document.querySelector('pre').innerHTML=data;
+                    document.querySelector('p').innerHTML='Initialized : '+new Date().toLocaleString();
+                    
+                    if(inited)
+                        return;
+                        
+                    inited++;
+                    
+                    socket.on(
+                        'weather.update',
+                        function(data){
+                            console.log(data);
+                            document.querySelector('pre').innerHTML=data;
+                            document.querySelector('p').innerHTML='Last Updated : '+new Date().toLocaleString();
+                        }
+                    );
+                }
+            );
+        </script>
+    </head>
+    <body>
+        <p></p>
+        <pre>
+            
+        </pre>
+    </body>
+</html>
