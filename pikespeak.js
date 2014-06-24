@@ -70,27 +70,13 @@ function getWeather(){
                 console.error(e);
             }
         );
+    }
     
     setTimeout(
         getWeather,
         getDelay()    
     );
 }
-
-getWeather();
-
-io.sockets.on(
-    'connection', 
-    function (socket){
-        socket.emit(
-            'weather.init',
-            {
-                weather:pikespeak,
-                locations:locations
-            }
-        );
-    }
-);
 
 var locations=[
   {
@@ -279,3 +265,18 @@ var locations=[
     "Long":-105.043992
   }
 ];
+
+getWeather();
+
+io.sockets.on(
+    'connection', 
+    function (socket){
+        socket.emit(
+            'weather.init',
+            {
+                weather:pikespeak,
+                locations:locations
+            }
+        );
+    }
+);
