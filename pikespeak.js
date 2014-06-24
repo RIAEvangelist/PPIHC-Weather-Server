@@ -23,9 +23,10 @@ new pubsub(pikespeak);
 pikespeak.on(
     'weather.update',
     function(){
+        console.log(checkingWeather)
         if(checkingWeather>0)
             return;
-
+        
         io.sockets.emit(
             'weather.update',
             pikespeak
@@ -40,36 +41,41 @@ function getDelay(){
 function getWeather(){
     checkingWeather=locations.length;
     for(var i=0; i<locations.length;i++){
-        https.get(
-            'https://api.forecast.io/forecast/[yourAPIKey]/'+locations[i].latLon,
-            function(result) {
-                var response = '';
-                result.setEncoding('utf8');
-                result.on(
-                    'data', 
-                    function(chunk) {
-                        //add this chunk to the output to send
-                        response+=chunk;
-                    }
-                );
-                result.on(
-                    'end', 
-                    function(){
-                        pikespeak[i]=JSON.parse(response);
-                        pikespeak[i].name=locations[i].name;
-                        locations.length--;
-                        pikespeak.trigger(
-                            'weather.update'
+        (
+            function(i){
+                https.get(
+                    'https://api.forecast.io/forecast/[your api key here]/'+locations[i].lat+','+locations[i].lon,
+                    function(result) {
+                        var response = '';
+                        result.setEncoding('utf8');
+                        result.on(
+                            'data', 
+                            function(chunk) {
+                                //add this chunk to the output to send
+                                response+=chunk;
+                            }
+                        );
+                        result.on(
+                            'end', 
+                            function(){
+                                //console.log(i,locations[i])
+                                pikespeak[i]=JSON.parse(response);
+                                pikespeak[i].name=locations[i].name;
+                                checkingWeather--;
+                                pikespeak.trigger(
+                                    'weather.update'
+                                );
+                            }
                         );
                     }
+                ).on(
+                    'error', 
+                    function(e) {
+                        console.error(e);
+                    }
                 );
             }
-        ).on(
-            'error', 
-            function(e) {
-                console.error(e);
-            }
-        );
+        )(i)
     }
     
     setTimeout(
@@ -80,189 +86,189 @@ function getWeather(){
 
 var locations=[
   {
-    "Name":"Garage",
-    "Lat":38.920244,
-    "Long":-105.020022
+    "name":"Garage",
+    "lat":38.920244,
+    "long":-105.020022
   },
   {
-    "Name":"Dam",
-    "Lat":38.920091,
-    "Long":-105.023731
+    "name":"Dam",
+    "lat":38.920091,
+    "long":-105.023731
   },
   {
-    "Name":"Start Line",
-    "Lat":38.921623,
-    "Long":-105.037188
+    "name":"Start Line",
+    "lat":38.921623,
+    "long":-105.037188
   },
   {
-    "Name":"Crystal Work Road",
-    "Lat":38.915394,
-    "Long":-105.044721
+    "name":"Crystal Work Road",
+    "lat":38.915394,
+    "long":-105.044721
   },
   {
-    "Name":"8 Mile Pit Road",
-    "Lat":38.910778,
-    "Long":-105.051822
+    "name":"8 Mile Pit Road",
+    "lat":38.910778,
+    "long":-105.051822
   },
   {
-    "Name":"Hansen's Corner",
-    "Lat":38.908668,
-    "Long":-105.053911
+    "name":"Hansen's Corner",
+    "lat":38.908668,
+    "long":-105.053911
   },
   {
-    "Name":"Horseshoe",
-    "Lat":38.906408,
-    "Long":-105.056101
+    "name":"Horseshoe",
+    "lat":38.906408,
+    "long":-105.056101
   },
   {
-    "Name":"9 Mile",
-    "Lat":38.904668,
-    "Long":-105.059028
+    "name":"9 Mile",
+    "lat":38.904668,
+    "long":-105.059028
   },
   {
-    "Name":"Engeineers Corner",
-    "Lat":38.904453,
-    "Long":-105.061213
+    "name":"Engeineers Corner",
+    "lat":38.904453,
+    "long":-105.061213
   },
   {
-    "Name":"Halfway Picnic Ground",
-    "Lat":38.901496,
-    "Long":-105.064844
+    "name":"Halfway Picnic Ground",
+    "lat":38.901496,
+    "long":-105.064844
   },
   {
-    "Name":"Gaylor Straits",
-    "Lat":38.898228,
-    "Long":-105.065122
+    "name":"Gaylor Straits",
+    "lat":38.898228,
+    "long":-105.065122
   },
   {
-    "Name":"Brown Bush Corner",
-    "Lat":38.895381,
-    "Long":-105.061932
+    "name":"Brown Bush Corner",
+    "lat":38.895381,
+    "long":-105.061932
   },
   {
-    "Name":"Big Spring",
-    "Lat":38.892841,
-    "Long":-105.066002
+    "name":"Big Spring",
+    "lat":38.892841,
+    "long":-105.066002
   },
   {
-    "Name":"Blue Sky",
-    "Lat":38.893645,
-    "Long":-105.067342
+    "name":"Blue Sky",
+    "lat":38.893645,
+    "long":-105.067342
   },
   {
-    "Name":"11 Mile Water Station",
-    "Lat":38.892895,
-    "Long":-105.068673
+    "name":"11 Mile Water Station",
+    "lat":38.892895,
+    "long":-105.068673
   },
   {
-    "Name":"Heitman's Hill",
-    "Lat":38.890926,
-    "Long":-105.066696
+    "name":"Heitman's Hill",
+    "lat":38.890926,
+    "long":-105.066696
   },
   {
-    "Name":"Grouse Hill",
-    "Lat":38.891268,
-    "Long":-105.068678
+    "name":"Grouse Hill",
+    "lat":38.891268,
+    "long":-105.068678
   },
   {
-    "Name":"Gilly's Corner",
-    "Lat":38.88724,
-    "Long":-105.073166
+    "name":"Gilly's Corner",
+    "lat":38.88724,
+    "long":-105.073166
   },
   {
-    "Name":"Sump",
-    "Lat":38.881752,
-    "Long":-105.071553
+    "name":"Sump",
+    "lat":38.881752,
+    "long":-105.071553
   },
   {
-    "Name":"Tin Barn",
-    "Lat":38.882559,
-    "Long":-105.07289
+    "name":"Tin Barn",
+    "lat":38.882559,
+    "long":-105.07289
   },
   {
-    "Name":"S/B Below Glen Cove",
-    "Lat":38.87901,
-    "Long":-105.072754
+    "name":"S/B Below Glen Cove",
+    "lat":38.87901,
+    "long":-105.072754
   },
   {
-    "Name":"Glen Cove",
-    "Lat":38.875471,
-    "Long":-105.073264
+    "name":"Glen Cove",
+    "lat":38.875471,
+    "long":-105.073264
   },
   {
-    "Name":"George's Corner",
-    "Lat":38.872968,
-    "Long":-105.075725
+    "name":"George's Corner",
+    "lat":38.872968,
+    "long":-105.075725
   },
   {
-    "Name":"Cove Creek",
-    "Lat":38.872326,
-    "Long":-105.070781
+    "name":"Cove Creek",
+    "lat":38.872326,
+    "long":-105.070781
   },
   {
-    "Name":"Ragged Edge",
-    "Lat":38.875241,
-    "Long":-105.065907
+    "name":"Ragged Edge",
+    "lat":38.875241,
+    "long":-105.065907
   },
   {
-    "Name":"Double Cut",
-    "Lat":38.869729,
-    "Long":-105.067653
+    "name":"Double Cut",
+    "lat":38.869729,
+    "long":-105.067653
   },
   {
-    "Name":"Start of 1st Leg",
-    "Lat":38.868989,
-    "Long":-105.067376
+    "name":"Start of 1st Leg",
+    "lat":38.868989,
+    "long":-105.067376
   },
   {
-    "Name":"Start of 2nd Leg",
-    "Lat":38.866817,
-    "Long":-105.062816
+    "name":"Start of 2nd Leg",
+    "lat":38.866817,
+    "long":-105.062816
   },
   {
-    "Name":"Start of 3rd Leg",
-    "Lat":38.867695,
-    "Long":-105.066515
+    "name":"Start of 3rd Leg",
+    "lat":38.867695,
+    "long":-105.066515
   },
   {
-    "Name":"Start of 4th Leg",
-    "Lat":38.866224,
-    "Long":-105.064113
+    "name":"Start of 4th Leg",
+    "lat":38.866224,
+    "long":-105.064113
   },
   {
-    "Name":"Devil's Playground",
-    "Lat":38.865151,
-    "Long":-105.069312
+    "name":"Devil's Playground",
+    "lat":38.865151,
+    "long":-105.069312
   },
   {
-    "Name":"Bottomless Pit",
-    "Lat":38.857111,
-    "Long":-105.063409
+    "name":"Bottomless Pit",
+    "lat":38.857111,
+    "long":-105.063409
   },
   {
-    "Name":"Upper Gravel Pit",
-    "Lat":38.84918,
-    "Long":-105.056108
+    "name":"Upper Gravel Pit",
+    "lat":38.84918,
+    "long":-105.056108
   },
   {
-    "Name":"Boulder Park",
-    "Lat":38.846074,
-    "Long":-105.051602
+    "name":"Boulder Park",
+    "lat":38.846074,
+    "long":-105.051602
   },
   {
-    "Name":"Cog Cut",
-    "Lat":38.83713,
-    "Long":-105.043473
+    "name":"Cog Cut",
+    "lat":38.83713,
+    "long":-105.043473
   },
   {
-    "Name":"Olympic",
-    "Lat":38.841553,
-    "Long":-105.046325
+    "name":"Olympic",
+    "lat":38.841553,
+    "long":-105.046325
   },
   {
-    "Name":"Finish Line",
-    "Lat":38.839942,
-    "Long":-105.043992
+    "name":"Finish Line",
+    "lat":38.839942,
+    "long":-105.043992
   }
 ];
 
@@ -271,6 +277,7 @@ getWeather();
 io.sockets.on(
     'connection', 
     function (socket){
+        console.log(12345678);
         socket.emit(
             'weather.init',
             {
